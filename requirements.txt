@@ -1,0 +1,12 @@
+torch
+torchvision
+streamlit
+streamlit-webrtc
+opencv-python-headless
+pillow
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+tqdm
