@@ -70,16 +70,43 @@ def detect_faces(
 def draw_prediction(frame_bgr: np.ndarray, box, label: str, confidence: float):
     x, y, w, h = box
     text = f"{label}: {confidence:.0%}"
-    cv2.rectangle(frame_bgr, (x, y), (x + w, y + h), (20, 180, 90), 2)
-    cv2.rectangle(frame_bgr, (x, max(0, y - 28)), (x + w, y), (20, 180, 90), -1)
+
+    image_height, image_width = frame_bgr.shape[:2]
+    base_size = max(image_height, image_width)
+    box_thickness = max(2, int(round(base_size / 350)))
+    font_scale = min(2.8, max(0.65, base_size / 900))
+    text_thickness = max(2, int(round(box_thickness * 0.65)))
+    padding = max(6, int(round(base_size / 180)))
+
+    (text_width, text_height), baseline = cv2.getTextSize(
+        text,
+        cv2.FONT_HERSHEY_SIMPLEX,
+        font_scale,
+        text_thickness,
+    )
+
+    label_height = text_height + baseline + padding * 2
+    label_width = min(max(text_width + padding * 2, w), image_width - x)
+
+    label_y1 = y - label_height
+    label_y2 = y
+    text_y = y - padding - baseline
+
+    if label_y1 < 0:
+        label_y1 = y
+        label_y2 = min(image_height, y + label_height)
+        text_y = label_y1 + padding + text_height
+
+    cv2.rectangle(frame_bgr, (x, y), (x + w, y + h), (20, 180, 90), box_thickness)
+    cv2.rectangle(frame_bgr, (x, label_y1), (x + label_width, label_y2), (20, 180, 90), -1)
     cv2.putText(
         frame_bgr,
         text,
-        (x + 6, max(18, y - 8)),
+        (x + padding, text_y),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.55,
+        font_scale,
         (255, 255, 255),
-        2,
+        text_thickness,
         cv2.LINE_AA,
     )
     return frame_bgr
