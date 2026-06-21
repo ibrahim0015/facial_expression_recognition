@@ -30,7 +30,7 @@ def cached_detector():
     return load_haar_detector()
 
 
-def predict_on_bgr_frame(frame_bgr, model, class_names, transform, device, max_faces=3):
+def predict_on_bgr_frame(frame_bgr, model, class_names, transform, device, max_faces=1):
     detector = cached_detector()
     faces = detect_faces(frame_bgr, detector, max_faces=max_faces)
     predictions = []
