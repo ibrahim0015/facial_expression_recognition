@@ -30,7 +30,7 @@ def cached_detector():
     return load_haar_detector()
 
 
-def predict_on_bgr_frame(frame_bgr, model, class_names, transform, device, max_faces=1):
+def predict_on_bgr_frame(frame_bgr, model, class_names, transform, device, max_faces=3):
     detector = cached_detector()
     faces = detect_faces(frame_bgr, detector, max_faces=max_faces)
     predictions = []
@@ -64,7 +64,7 @@ st.title("Facial Expression Recognition")
 
 checkpoint_path = st.sidebar.text_input("Model checkpoint", DEFAULT_CHECKPOINT)
 mode = st.sidebar.radio("Input type", ["Image upload", "Camera snapshot", "Live webcam", "Video upload"])
-max_faces = st.sidebar.slider("Maximum faces to detect", 1, 10, 3)
+max_faces = st.sidebar.slider("Maximum faces to detect", 1, 10, 1)
 
 if not Path(checkpoint_path).exists():
     st.warning(
