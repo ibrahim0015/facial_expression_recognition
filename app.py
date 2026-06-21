@@ -129,7 +129,7 @@ elif mode == "Live webcam":
 
 else:
     uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
-    every_n_frames = st.slider("Run detection every N frames", 1, 10, 3)
+    every_n_frames = st.slider("Run detection every N frames", 1, 10, 1)
 
     if uploaded_video and st.button("Annotate video"):
         with NamedTemporaryFile(delete=False, suffix=Path(uploaded_video.name).suffix) as input_tmp:
