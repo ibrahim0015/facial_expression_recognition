@@ -5,8 +5,24 @@ import numpy as np
 
 
 def load_haar_detector():
-    cascade_path = Path(cv2.data.haarcascades) / "haarcascade_frontalface_default.xml"
-    detector = cv2.CascadeClassifier(str(cascade_path))
+    cascade_dir = getattr(getattr(cv2, "data", None), "haarcascades", None)
+    if not cascade_dir:
+        raise RuntimeError(
+            "OpenCV Haar cascade files are unavailable. Use Python 3.12 on Streamlit Cloud "
+            "and reinstall dependencies from requirements.txt."
+        )
+
+    cascade_path = Path(cascade_dir) / "haarcascade_frontalface_default.xml"
+    classifier = getattr(cv2, "CascadeClassifier", None)
+    if classifier is None:
+        classifier = getattr(getattr(cv2, "objdetect", None), "CascadeClassifier", None)
+    if classifier is None:
+        raise RuntimeError(
+            "OpenCV was installed without CascadeClassifier support. Redeploy the app with "
+            "Python 3.12 and opencv-python-headless from requirements.txt."
+        )
+
+    detector = classifier(str(cascade_path))
     if detector.empty():
         raise RuntimeError("Could not load OpenCV Haar face detector.")
     return detector
